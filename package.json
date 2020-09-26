@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "repository": "https://github.com/Marieyr/YgoCardEngine.git",
+  "author": "Marieyr <m4a1k2ak47@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "cz-conventional-changelog": "3.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
