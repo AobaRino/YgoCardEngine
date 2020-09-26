@@ -5,9 +5,17 @@ using YgoCardEngine.Domain.Shared.Cards;
 
 namespace YgoCardEngine.Domain.Cards
 {
-    public class CardDatas
+    public class CardInfo
     {
         public int Id { get; set; }
+        /// <summary>
+        /// 卡片名称
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 卡片描述
+        /// </summary>
+        public string Desc { get; set; }
         /// <summary>
         /// 卡片来源
         /// </summary>
@@ -19,7 +27,7 @@ namespace YgoCardEngine.Domain.Cards
         /// <summary>
         /// 命名设置
         /// </summary>
-        public int SetCode { get; set; }
+        public long SetCode { get; set; }
         /// <summary>
         /// 卡片种类
         /// </summary>
@@ -35,7 +43,7 @@ namespace YgoCardEngine.Domain.Cards
         /// <summary>
         /// 等级
         /// </summary>
-        public int Level { get; set; }
+        public long Level { get; set; }
         /// <summary>
         /// 种族
         /// </summary>
@@ -47,7 +55,7 @@ namespace YgoCardEngine.Domain.Cards
         /// <summary>
         /// 效果检索
         /// </summary>
-        public int Category { get; set; }
+        public long Category { get; set; }
 
     }
 }

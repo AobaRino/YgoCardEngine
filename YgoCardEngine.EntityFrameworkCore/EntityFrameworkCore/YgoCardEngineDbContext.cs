@@ -14,19 +14,17 @@ namespace YgoCardEngine.EntityFrameworkCore.EntityFrameworkCore
         {
 
         }
-        public DbSet<CardDatas> CardDatas { get; set; }
-        public DbSet<CardTexts> CardTexts { get; set; }
+        public DbSet<CardInfo> CardInfo { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<CardDatas>(b =>
+            modelBuilder.Entity<CardInfo>(b =>
             {
-                b.ToTable("datas");
+                b.ToTable("CardInfo");
+                b.Property(p => p.Name).IsRequired(true).HasMaxLength(2048);
+                b.Property(p => p.Desc).IsRequired(true).HasMaxLength(2048);
             });
-            modelBuilder.Entity<CardTexts>(b =>
-            {
-                b.ToTable("texts");
-            });
+
 
 
         }

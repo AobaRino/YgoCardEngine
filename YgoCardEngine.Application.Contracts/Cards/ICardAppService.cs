@@ -8,6 +8,6 @@ namespace YgoCardEngine.Application.Contracts.Cards
 {
     public interface ICardAppService:IApplicationService
     {
-        Task<CardDto> GetList();
+        Task<PagedDto<CardInfoDto>> GetListAsync(CardInfoSearchDto input);
     }
 }

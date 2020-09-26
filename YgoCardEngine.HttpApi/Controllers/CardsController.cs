@@ -1,17 +1,31 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using YgoCardEngine.Application.Contracts.Cards;
+using YgoCardEngine.Application.Contracts.Dtos;
+using YgoCardEngine.EntityFrameworkCore.EntityFrameworkCore;
 
 namespace YgoCardEngine.HttpApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CardsController : ControllerBase         
+    public class CardsController : ControllerBase
     {
+        private readonly ICardAppService _cardAppService;
+
+        public CardsController(ICardAppService cardAppService)
+        {
+            _cardAppService = cardAppService;
+        }
+
         // GET: api/<CardsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<PagedDto<CardInfoDto>> GetAsync([FromQuery]CardInfoSearchDto input)
         {
-            return new string[] { "value1", "value2" };
+            var result = await _cardAppService.GetListAsync(input);
+
+
+            return result;
         }
 
         // GET api/<CardsController>/5
@@ -38,5 +52,7 @@ namespace YgoCardEngine.HttpApi.Controllers
         public void Delete(int id)
         {
         }
+
+
     }
 }
