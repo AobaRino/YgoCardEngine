@@ -8,4 +8,8 @@
     <ProjectReference Include="..\YgoCardEngine.Domain.Shared\YgoCardEngine.Domain.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Users\" />
+  </ItemGroup>
+
 </Project>

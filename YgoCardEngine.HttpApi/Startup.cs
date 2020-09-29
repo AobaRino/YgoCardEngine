@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using YgoCardEngine.Application;
 using YgoCardEngine.Application.Cards;
 using YgoCardEngine.Application.Contracts.Cards;
@@ -38,6 +39,10 @@ namespace YgoCardEngine
             services.AddDbContext<YgoCardEngineDbContext>(
                 options=>
                     options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "ÀäÆø¿ª·Å",Version = "1.0"});
+            });
             services.AddTransient<ICardAppService, CardAppService>();
         }
 
@@ -50,6 +55,13 @@ namespace YgoCardEngine
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "ºß£¡");
+            });
 
             app.UseRouting();
 

@@ -4,7 +4,7 @@
     "YgoCardEngine": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/cards",
+      "launchUrl": "swagger/index.html",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -13,7 +13,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/cards",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger/index.html",
       "publishAllPorts": true,
       "useSSL": true
     }
