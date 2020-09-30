@@ -24,6 +24,8 @@ namespace YgoCardEngine.Application.Cards
         {
             _mapper = mapper;
         }
+
+        #region 检索
         public async Task<PagedDto<CardInfoDto>> GetListAsync(CardInfoSearchDto input)
         {
             var list = _context.CardInfo.Where(x =>
@@ -68,5 +70,8 @@ namespace YgoCardEngine.Application.Cards
         private IQueryable<CardInfo> OrderBy(IQueryable<CardInfo> source,
             Expression<Func<CardInfo, int>> keySelector,
             bool asc) => asc ? source.OrderBy(keySelector) : source.OrderByDescending(keySelector);
+        #endregion
+
+
     }
 }
