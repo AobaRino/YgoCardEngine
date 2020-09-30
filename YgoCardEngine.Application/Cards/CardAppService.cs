@@ -28,7 +28,7 @@ namespace YgoCardEngine.Application.Cards
         #region 检索
         public async Task<PagedDto<CardInfoDto>> GetListAsync(CardInfoSearchDto input)
         {
-            var list = _context.CardInfo.Where(x =>
+            var list = _context.CardInfos.Where(x =>
                 (string.IsNullOrEmpty(input.Name) || x.Name.Contains(input.Name)) &&
                 (input.CardType == null || x.Type == (CardType)input.CardType) &&
                 (input.CardRace == null || x.Race == (CardRace)input.CardRace) &&

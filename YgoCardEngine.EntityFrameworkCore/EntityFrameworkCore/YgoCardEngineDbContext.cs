@@ -16,7 +16,7 @@ namespace YgoCardEngine.EntityFrameworkCore.EntityFrameworkCore
         {
 
         }
-        public DbSet<CardInfo> CardInfo { get; set; }
+        public DbSet<CardInfo> CardInfos { get; set; }
         public DbSet<CardGroup> CardGroups { get; set; }
         public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
