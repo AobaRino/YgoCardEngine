@@ -7,6 +7,7 @@ namespace YgoCardEngine.Domain.Shared
 {
     public static class Extension
     {
+
         /// <summary>
         /// 祖传分页了解一下？
         /// </summary>

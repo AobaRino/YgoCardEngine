@@ -18,7 +18,9 @@ using YgoCardEngine.Application.Cards;
 using YgoCardEngine.Application.Contracts.Cards;
 using YgoCardEngine.Application.Contracts.Users;
 using YgoCardEngine.Application.Users;
+using YgoCardEngine.Domain.Shared;
 using YgoCardEngine.EntityFrameworkCore.EntityFrameworkCore;
+using YgoCardEngine.HttpApi.Middleware;
 
 // ReSharper disable All
 
@@ -37,14 +39,20 @@ namespace YgoCardEngine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddAutoMapper(typeof(YgoCardEngineApplicationAutoMapperProfile));
+
             services.AddDbContext<YgoCardEngineDbContext>(
-                options=>
+                options =>
                     options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo {Title = "冷气开放",Version = "1.0"});
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "冷气开放", Version = "1.0" });
             });
+
+            services.AddOptions();
+            services.Configure<AESConfig>(Configuration.GetSection("AESConfig"));
+
             services.AddTransient<ICardAppService, CardAppService>();
             services.AddTransient<IUserCardAppService, UserCardAppService>();
         }
@@ -68,7 +76,9 @@ namespace YgoCardEngine
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCustomMiddleware();
+
+            //app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

@@ -55,8 +55,10 @@ namespace YgoCardEngine.Application.Users
         public async Task<CardGroupDto> AddUserCardGroupAsync(CardGroupDto input)
         {
             var model = _mapper.Map<CardGroup>(input);
+            //todo 通过header中token获取用户
             model.User=new User(){Id = Guid.NewGuid()};
             var result = await _context.CardGroups.AddAsync(model);
+            await _context.SaveChangesAsync();
             return _mapper.Map<CardGroupDto>(result.Entity);
         }
 

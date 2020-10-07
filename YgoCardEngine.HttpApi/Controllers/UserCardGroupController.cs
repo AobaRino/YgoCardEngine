@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YgoCardEngine.Application.Contracts.Dtos;
 using YgoCardEngine.Application.Contracts.Users;
+using YgoCardEngine.Domain.Shared;
 
 namespace YgoCardEngine.HttpApi.Controllers
 {
+    [CustomAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserCardGroupController : ControllerBase
