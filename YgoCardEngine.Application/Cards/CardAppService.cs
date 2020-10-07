@@ -22,7 +22,7 @@ namespace YgoCardEngine.Application.Cards
 
         public CardAppService(YgoCardEngineDbContext context, IMapper mapper) : base(context)
         {
-            _mapper = mapper;
+            _mapper = mapper ?? throw new ArgumentException(nameof(_mapper));
         }
 
         #region 检索

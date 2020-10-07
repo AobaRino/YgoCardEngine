@@ -16,6 +16,8 @@ namespace YgoCardEngine.Domain.Shared
         /// <returns></returns>
         public static IQueryable<TSource> Paged<TSource>(this IQueryable<TSource> source, int pageIndex)
         {
+            if (pageIndex <= 0)
+                pageIndex = 1;
             return source.Skip((pageIndex - 1) * Config.PageSize).Take(Config.PageSize);
         }
     }

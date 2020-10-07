@@ -16,6 +16,8 @@ using Microsoft.OpenApi.Models;
 using YgoCardEngine.Application;
 using YgoCardEngine.Application.Cards;
 using YgoCardEngine.Application.Contracts.Cards;
+using YgoCardEngine.Application.Contracts.Users;
+using YgoCardEngine.Application.Users;
 using YgoCardEngine.EntityFrameworkCore.EntityFrameworkCore;
 
 // ReSharper disable All
@@ -44,6 +46,7 @@ namespace YgoCardEngine
                 options.SwaggerDoc("v1", new OpenApiInfo {Title = "ÀäÆø¿ª·Å",Version = "1.0"});
             });
             services.AddTransient<ICardAppService, CardAppService>();
+            services.AddTransient<IUserCardAppService, UserCardAppService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
