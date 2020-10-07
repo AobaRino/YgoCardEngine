@@ -15,6 +15,8 @@
     <Compile Remove="Migrations\20200930170620_UpdateSomeProps.Designer.cs" />
     <Compile Remove="Migrations\20200930170726_UpdateSomeProps.cs" />
     <Compile Remove="Migrations\20200930170726_UpdateSomeProps.Designer.cs" />
+    <Compile Remove="Migrations\20201007152559_AlterUserTable.cs" />
+    <Compile Remove="Migrations\20201007152559_AlterUserTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

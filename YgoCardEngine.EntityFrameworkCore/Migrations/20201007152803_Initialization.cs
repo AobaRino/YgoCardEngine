@@ -35,11 +35,13 @@ namespace YgoCardEngine.EntityFrameworkCore.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(maxLength: 36, nullable: false)
+                    Id = table.Column<Guid>(maxLength: 36, nullable: false),
+                    Oid = table.Column<string>(maxLength: 36, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
+                    table.UniqueConstraint("AK_User_Oid", x => x.Oid);
                 });
 
             migrationBuilder.CreateTable(

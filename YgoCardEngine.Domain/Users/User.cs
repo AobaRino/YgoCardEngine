@@ -7,6 +7,7 @@ namespace YgoCardEngine.Domain.Users
     public class User
     {
         public Guid Id { get; set; } = Guid.NewGuid();
+        public string Oid { get; set; }
 
         public List<CardGroup> CardGroups { get; } = new List<CardGroup>();
     }

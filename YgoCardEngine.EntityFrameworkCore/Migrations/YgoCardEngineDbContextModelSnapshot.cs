@@ -105,7 +105,14 @@ namespace YgoCardEngine.EntityFrameworkCore.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(36);
 
+                    b.Property<string>("Oid")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(36);
+
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Oid");
 
                     b.ToTable("User");
                 });

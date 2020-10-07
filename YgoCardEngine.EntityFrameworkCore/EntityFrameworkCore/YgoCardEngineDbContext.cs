@@ -41,8 +41,9 @@ namespace YgoCardEngine.EntityFrameworkCore.EntityFrameworkCore
 
             modelBuilder.Entity<User>(b =>
             {
-                b.ToTable("User");
+                b.ToTable("User").HasAlternateKey(p => new {p.Oid });
                 b.Property(p => p.Id).IsRequired(true).HasMaxLength(36);
+                b.Property(p => p.Oid).IsRequired(true).HasMaxLength(36);
             });
 
         }

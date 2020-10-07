@@ -9,7 +9,7 @@ using YgoCardEngine.EntityFrameworkCore.EntityFrameworkCore;
 namespace YgoCardEngine.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(YgoCardEngineDbContext))]
-    [Migration("20200930171834_Initialization")]
+    [Migration("20201007152803_Initialization")]
     partial class Initialization
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,7 +107,14 @@ namespace YgoCardEngine.EntityFrameworkCore.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(36);
 
+                    b.Property<string>("Oid")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasMaxLength(36);
+
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Oid");
 
                     b.ToTable("User");
                 });
