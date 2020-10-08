@@ -45,6 +45,7 @@ namespace YgoCardEngine.HttpApi.Controllers
                 return BadRequest(ModelState.Values);
             }
 
+
             var result = await _userCardAppService.AddUserCardGroupAsync(input);
             return CreatedAtRoute(nameof(GetUserCardGroupAsync), new { id = result.Id }, result);
         }

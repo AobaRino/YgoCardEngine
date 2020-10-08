@@ -9,6 +9,7 @@ namespace YgoCardEngine.Application
 {
     public class AppService
     {
+        public static Guid Oid;
         protected readonly YgoCardEngineDbContext _context;
 
         public AppService(YgoCardEngineDbContext context)

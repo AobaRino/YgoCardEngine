@@ -32,6 +32,12 @@ namespace YgoCardEngine.Application.Contracts.Users
         /// <param name="id"></param>
         /// <returns></returns>
         Task DeleteCardGroupAsync(CardGroupDto id);
+        /// <summary>
+        /// 创建或获取用户
+        /// </summary>
+        /// <param name="oid"></param>
+        /// <returns></returns>
+        Task<Guid> CreateUserAsync(string oid);
 
     }
 }
