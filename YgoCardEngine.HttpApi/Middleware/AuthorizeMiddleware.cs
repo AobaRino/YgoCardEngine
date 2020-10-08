@@ -7,23 +7,33 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using YgoCardEngine.Application;
+using YgoCardEngine.Application.Contracts.Users;
 using YgoCardEngine.Domain.Shared;
+using YgoCardEngine.HttpApi.Controllers;
 
 namespace YgoCardEngine.HttpApi.Middleware
 {
     public class AuthorizeMiddleware
     {
         private readonly RequestDelegate _next;
+
         private readonly AESConfig _aesConfig;
 
-        public AuthorizeMiddleware(RequestDelegate next, IOptions<AESConfig> aesConfig)
+        public AuthorizeMiddleware(RequestDelegate next,
+            IOptions<AESConfig> aesConfig
+            )
         {
             _next = next ?? throw new ArgumentNullException(nameof(_next));
+
             _aesConfig = aesConfig.Value ?? throw new ArgumentNullException(nameof(_aesConfig));
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, IUserCardAppService userCardAppService)
         {
+            if (userCardAppService == null)
+                throw new ArgumentNullException(nameof(userCardAppService));
+
             var endPointMetaData = httpContext.GetEndpoint()?.Metadata;
             if (endPointMetaData == null)
                 throw new ArgumentNullException(nameof(endPointMetaData));
@@ -44,17 +54,21 @@ namespace YgoCardEngine.HttpApi.Middleware
                 return;
             }
 
-            var uid = AuthentiocationHelper.Check(
+            var oid = AuthentiocationHelper.Check(
                 authentication,
                 _aesConfig.Key,
                 _aesConfig.Vector);
 
 
-            if (string.IsNullOrEmpty(uid))
+            if (string.IsNullOrEmpty(oid))
             {
                 await Unauthorized(httpContext);
                 return;
             }
+
+            AppService.Oid = await userCardAppService.CreateUserAsync(oid);
+
+
 
             await _next(httpContext);
         }

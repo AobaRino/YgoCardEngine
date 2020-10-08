@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace YgoCardEngine
+namespace YgoCardEngine.HttpApi
 {
     public class Program
     {
@@ -21,6 +21,10 @@ namespace YgoCardEngine
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseDefaultServiceProvider(options =>
+                    {
+                        options.ValidateScopes = false;
+                    });
                 });
     }
 }
