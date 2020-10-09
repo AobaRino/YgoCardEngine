@@ -55,6 +55,7 @@ namespace YgoCardEngine.Application.Users
         public async Task<CardGroupDto> AddUserCardGroupAsync(CardGroupDto input)
         {
             var model = _mapper.Map<CardGroup>(input);
+            model.UserId = Id;
             var result = await _context.CardGroups.AddAsync(model);
             await _context.SaveChangesAsync();
             return _mapper.Map<CardGroupDto>(result.Entity);

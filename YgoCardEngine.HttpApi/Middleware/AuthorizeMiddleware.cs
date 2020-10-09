@@ -66,7 +66,7 @@ namespace YgoCardEngine.HttpApi.Middleware
                 return;
             }
 
-            AppService.Oid = await userCardAppService.CreateUserAsync(oid);
+            AppService.Id = await userCardAppService.CreateUserAsync(oid);
 
 
 
