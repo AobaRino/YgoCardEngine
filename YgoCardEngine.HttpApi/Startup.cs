@@ -53,8 +53,8 @@ namespace YgoCardEngine
             services.AddOptions();
             services.Configure<AESConfig>(Configuration.GetSection("AESConfig"));
 
-            services.AddScoped<ICardAppService, CardAppService>();
-            services.AddScoped<IUserCardAppService, UserCardAppService>();
+            services.AddTransient<ICardAppService, CardAppService>();
+            services.AddTransient<IUserCardAppService, UserCardAppService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
