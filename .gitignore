@@ -8,3 +8,6 @@ data/cache/
 .DS_Store
 .vscode/
 .idea/
+# SQLite 读取时产生的临时文件
+*.db-shm
+*.db-wal
