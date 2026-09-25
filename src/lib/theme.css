@@ -1,0 +1,67 @@
+/* 主题变量：组卡器页面挂在 :root，嵌入组件挂在 :host（Shadow DOM） */
+:root,
+:host {
+  color-scheme: light;
+  --bg: #f4f5f7;
+  --panel: #ffffff;
+  --panel-2: #eef0f4;
+  --border: #d8dce3;
+  --text: #1c2230;
+  --muted: #667085;
+  --accent: #3563e9;
+  --accent-contrast: #ffffff;
+  --danger: #d92d20;
+  --warn: #b54708;
+  --ok: #067647;
+  --shadow: 0 8px 28px rgb(15 23 42 / 0.18);
+  --radius: 8px;
+  --card-ratio: 59 / 86;
+
+  /* 卡框颜色（文字卡面与色块） */
+  --frame-normal: #d9b36b;
+  --frame-effect: #c9793b;
+  --frame-ritual: #6c8fd0;
+  --frame-fusion: #9860b8;
+  --frame-synchro: #d8d8d8;
+  --frame-xyz: #2b2b2b;
+  --frame-link: #2f6fb5;
+  --frame-token: #9a9a9a;
+  --frame-spell: #1d9a8a;
+  --frame-trap: #b8457e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']),
+  :host(:not([theme='light'])) {
+    color-scheme: dark;
+    --bg: #12141a;
+    --panel: #1b1e27;
+    --panel-2: #242834;
+    --border: #333947;
+    --text: #e7e9ee;
+    --muted: #98a2b3;
+    --accent: #6d8cff;
+    --accent-contrast: #0b1020;
+    --danger: #f97066;
+    --warn: #fdb022;
+    --ok: #47cd89;
+    --shadow: 0 8px 28px rgb(0 0 0 / 0.5);
+  }
+}
+
+:root[data-theme='dark'],
+:host([theme='dark']) {
+  color-scheme: dark;
+  --bg: #12141a;
+  --panel: #1b1e27;
+  --panel-2: #242834;
+  --border: #333947;
+  --text: #e7e9ee;
+  --muted: #98a2b3;
+  --accent: #6d8cff;
+  --accent-contrast: #0b1020;
+  --danger: #f97066;
+  --warn: #fdb022;
+  --ok: #47cd89;
+  --shadow: 0 8px 28px rgb(0 0 0 / 0.5);
+}

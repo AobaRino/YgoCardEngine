@@ -1,14 +1,40 @@
 {
-  "version": "1.0.0",
-  "repository": "https://github.com/Marieyr/YgoCardEngine.git",
-  "author": "Marieyr <m4a1k2ak47@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "cz-conventional-changelog": "3.3.0"
+  "name": "ygo-card-engine",
+  "version": "2.0.0",
+  "description": "游戏王组卡器：卡片检索、卡组配置、分享与嵌入",
+  "scripts": {
+    "data": "node --no-warnings scripts/build-data.ts",
+    "data:update": "node --no-warnings scripts/build-data.ts --fetch",
+    "predev": "npm run data",
+    "dev": "vite",
+    "prebuild": "npm run data",
+    "build": "vite build && vite build -c vite.embed.config.ts",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run"
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AobaRino/YgoCardEngine.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AobaRino/YgoCardEngine/issues"
+  },
+  "homepage": "https://github.com/AobaRino/YgoCardEngine#readme",
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tsconfig/svelte": "^5.0.8",
+    "@types/node": "^26.6.2",
+    "svelte": "^5.57.1",
+    "svelte-check": "^4.7.6",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
   }
 }
