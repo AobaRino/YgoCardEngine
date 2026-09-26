@@ -28,7 +28,7 @@ function openDeckLink(deck: Deck) {
   history.replaceState(null, '', location.pathname + location.search);
 }
 
-const THEME_KEY = 'ygo-card-engine:theme' // 旧仓库名，保留以免丢失用户设置;
+const THEME_KEY = 'ygo-deck:theme';
 const THEMES: Record<string, [next: string, icon: string]> = { auto: ['light', '◐'], light: ['dark', '☀'], dark: ['auto', '☾'] };
 
 function readTheme() {
