@@ -1,7 +1,9 @@
 /** iframe 嵌入页：embed.html#deck=ydke://...&name=... */
-import { mount } from 'svelte';
+import { createRoot } from 'react-dom/client';
+import '../lib/theme.css';
+import '../components/components.css';
 import '../app/app.css';
-import DeckView from '../components/DeckView.svelte';
+import DeckView from '../components/DeckView';
 import { deckFromParams } from '../lib/deck';
 import { siteBase } from '../lib/util';
 
@@ -12,7 +14,7 @@ const theme = params.get('theme');
 if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
 
 if (deck) {
-  mount(DeckView, { target, props: { deck, builderUrl: siteBase(), compact: params.has('compact') } });
+  createRoot(target).render(<DeckView deck={deck} builderUrl={siteBase()} compact={params.has('compact')} />);
 } else {
   target.textContent = '链接中没有卡组数据';
 }

@@ -1,0 +1,347 @@
+/*
+ * 组卡器与嵌入组件共用的样式。
+ * 类名统一 ygo- 前缀：组卡器中作为全局样式，嵌入组件中注入 Shadow DOM。
+ */
+
+/* ---------------------------------------------------------------- 卡图 */
+.ygo-card {
+  position: relative;
+  aspect-ratio: var(--card-ratio, 59 / 86);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--panel-2, #eee);
+  user-select: none;
+  container-type: inline-size;
+}
+.ygo-card img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.ygo-card img.loaded {
+  opacity: 1;
+}
+.ygo-face {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+  padding: 6%;
+  box-sizing: border-box;
+  color: #111;
+  background: var(--frame, #c9793b);
+  font-size: clamp(8px, 11cqi, 14px);
+  line-height: 1.2;
+}
+.ygo-face-name {
+  background: rgb(255 255 255 / 0.75);
+  border-radius: 2px;
+  padding: 2% 4%;
+  font-weight: 600;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+.ygo-face-art {
+  flex: 1;
+  background: rgb(0 0 0 / 0.18);
+  border-radius: 2px;
+}
+.ygo-face-stats {
+  text-align: right;
+  font-weight: 600;
+}
+.ygo-card[data-frame='normal'] { --frame: var(--frame-normal); }
+.ygo-card[data-frame='effect'] { --frame: var(--frame-effect); }
+.ygo-card[data-frame='ritual'] { --frame: var(--frame-ritual); }
+.ygo-card[data-frame='fusion'] { --frame: var(--frame-fusion); }
+.ygo-card[data-frame='synchro'] { --frame: var(--frame-synchro); }
+.ygo-card[data-frame='xyz'] { --frame: var(--frame-xyz); }
+.ygo-card[data-frame='xyz'] .ygo-face { color: #eee; }
+.ygo-card[data-frame='link'] { --frame: var(--frame-link); }
+.ygo-card[data-frame='token'] { --frame: var(--frame-token); }
+.ygo-card[data-frame='spell'] { --frame: var(--frame-spell); }
+.ygo-card[data-frame='trap'] { --frame: var(--frame-trap); }
+.ygo-limit {
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  min-width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 700 clamp(9px, 14cqi, 16px) / 1 system-ui, sans-serif;
+  color: #fff;
+  background: #e8a200;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+}
+.ygo-limit.l0 { background: #d92d20; }
+.ygo-limit.l1 { background: #e8590c; }
+
+/* ---------------------------------------------------------------- 卡片文字详情 */
+.ygo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.ygo-text h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+.ygo-text-tags,
+.ygo-text-stats,
+.ygo-text-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 0.85rem;
+  align-items: center;
+}
+.ygo-text-tags span {
+  background: var(--panel-2);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.ygo-text-tags .ygo-banned {
+  background: var(--danger);
+  color: #fff;
+}
+.ygo-text-stats {
+  font-weight: 600;
+}
+.ygo-text-desc {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.ygo-text-meta {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.ygo-markers {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 7px);
+  gap: 1px;
+}
+.ygo-markers i {
+  width: 7px;
+  height: 7px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+}
+.ygo-markers i.on {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+.ygo-markers i.center {
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- 放大查看 */
+.ygo-zoom-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  background: rgb(0 0 0 / 0.72);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.ygo-zoom {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, min(420px, 42vw)) minmax(0, 420px);
+  gap: 20px;
+  max-width: 100%;
+  max-height: calc(100vh - 32px);
+  padding: 20px 20px 40px;
+  box-sizing: border-box;
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  outline: none;
+  overflow: auto;
+}
+.ygo-zoom.big {
+  grid-template-columns: minmax(0, min(620px, calc((100vh - 100px) * 59 / 86)));
+}
+.ygo-zoom-image {
+  cursor: zoom-in;
+  align-self: start;
+}
+.ygo-zoom.big .ygo-zoom-image {
+  cursor: zoom-out;
+}
+.ygo-zoom-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  overflow: auto;
+}
+.ygo-zoom button {
+  font: inherit;
+  cursor: pointer;
+}
+.ygo-zoom-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 18px;
+  z-index: 1;
+}
+.ygo-zoom-nav {
+  position: absolute;
+  bottom: 8px;
+  width: 32px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+}
+.ygo-zoom-nav.prev { left: 20px; }
+.ygo-zoom-nav.next { left: 58px; }
+.ygo-zoom-pos {
+  position: absolute;
+  bottom: 12px;
+  right: 20px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+@media (max-width: 640px) {
+  .ygo-zoom,
+  .ygo-zoom.big {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+  .ygo-zoom-image {
+    width: min(72vw, 320px);
+    justify-self: center;
+  }
+  .ygo-zoom.big .ygo-zoom-image {
+    width: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------- 只读卡组展示 */
+.ygo-deck {
+  --cell: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+.ygo-deck.compact {
+  --cell: 58px;
+  gap: 8px;
+}
+.ygo-deck-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.ygo-deck-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.ygo-deck-title strong {
+  font-size: 1.1rem;
+}
+.ygo-deck-counts {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.ygo-deck-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ygo-deck-toolbar button,
+.ygo-deck-toolbar a {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+}
+.ygo-deck-toolbar button:hover,
+.ygo-deck-toolbar a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ygo-deck h4 {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.ygo-deck h4 span {
+  color: var(--muted);
+  font-weight: 400;
+}
+.ygo-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--cell), 1fr));
+  gap: 4px;
+}
+.ygo-deck-cell {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  transition: transform 0.12s;
+  min-width: 0;
+}
+.ygo-deck-cell:hover,
+.ygo-deck-cell:focus-visible {
+  transform: translateY(-3px) scale(1.04);
+  z-index: 1;
+  outline: none;
+}
+.ygo-error {
+  color: var(--danger);
+  margin: 0;
+}
+.ygo-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: var(--panel);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  z-index: 2147483001;
+  box-shadow: var(--shadow);
+}

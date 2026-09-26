@@ -1,7 +1,7 @@
 {
   "name": "ygo-card-engine",
   "version": "2.0.0",
-  "description": "游戏王组卡器：卡片检索、卡组配置、分享与嵌入",
+  "description": "游戏王组卡器：卡片检索、卡组配置、分享与嵌入（React）",
   "scripts": {
     "data": "node --no-warnings scripts/build-data.ts",
     "data:update": "node --no-warnings scripts/build-data.ts --fetch",
@@ -10,7 +10,7 @@
     "prebuild": "npm run data",
     "build": "vite build && vite build -c vite.embed.config.ts",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
   "repository": {
@@ -23,11 +23,10 @@
   },
   "homepage": "https://github.com/AobaRino/YgoCardEngine#readme",
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^7.3.1",
-    "@tsconfig/svelte": "^5.0.8",
     "@types/node": "^26.6.2",
-    "svelte": "^5.57.1",
-    "svelte-check": "^4.7.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^6.0.3",
     "vite": "^8.3.1",
     "vitest": "^5.0.2"
@@ -36,5 +35,10 @@
   "type": "module",
   "engines": {
     "node": ">=22.18"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zustand": "^5.0.15"
   }
 }

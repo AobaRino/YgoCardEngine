@@ -21,11 +21,19 @@
 | 嵌入其他网站 | 编译出独立的 Web Component，Shadow DOM 隔离样式，任何网站一个 `<script>` 就能用 |
 | 部署 | 任意静态托管（GitHub Pages / Cloudflare Pages / Nginx），零运维 |
 
-语言与框架：**TypeScript + Svelte 5 + Vite**。
+语言与框架：**TypeScript + React 19 + Vite**，状态管理用 zustand。
 
-- Svelte 编译产物小、运行时轻，而且能直接编译成 Web Component——嵌入组件只有约 30 KB（gzip）
+- 组卡器、分享页、iframe 嵌入页、`<ygo-deck>` 组件共用同一套 React 组件（`src/components/`）
+- `<ygo-deck>` 是一个原生 Custom Element，内部用 React 渲染到 Shadow DOM，宿主网站不需要装 React
 - 数据构建脚本同样用 TypeScript，直接用 Node 内置的 `node:sqlite` 读取 cdb，不需要额外依赖
-- 以后如果需要账号、云端卡组、短链接等功能，可以再加一个轻量 API（如 Cloudflare Workers + D1），前端不用改结构
+
+### 为什么运行时不用数据库
+
+SQLite（cdb）只在**构建时**读一次，转成静态 JSON；运行时浏览器里直接检索 1.5 万张卡，一次检索实测在 30 毫秒以内，
+没有服务器、也没有数据库查询，所以不存在数据库性能问题。
+
+以后如果需要账号、云端卡组、短链接、卡组统计等功能，再加一个轻量 API（例如 Node + PostgreSQL），
+把卡组存进 PostgreSQL 即可；卡片数据本身仍建议保持静态，前端结构不用改。
 
 ## 卡片数据
 
@@ -114,7 +122,7 @@ Database/              旧项目保留的卡片数据（兜底）
 data/                  禁卡表、字段名快照；cache/ 为下载的上游数据（不入库）
 scripts/build-data.ts  cdb → 静态 JSON（全量 + 按 id 分片）
 src/lib/               卡片模型、卡组格式（YDK / ydke / 链接）、检索、数据加载
-src/components/        卡图、卡片详情、放大查看、只读卡组展示（组卡器与嵌入共用）
-src/app/               组卡器页面
+src/components/        卡图、卡片详情、放大查看、只读卡组展示（组卡器与嵌入共用，样式在 components.css）
+src/app/               组卡器页面（store.ts 为全局状态）
 src/embed/             iframe 嵌入页与 <ygo-deck> Web Component
 ```
