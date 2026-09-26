@@ -1,4 +1,6 @@
-# YgoCardEngine · 游戏王组卡器
+# ygo-deck · 游戏王组卡器
+
+在线使用：**https://aobarino.github.io/ygo-deck/**
 
 在线搜索游戏王卡片、配置卡组，一键生成分享链接，并能把卡组嵌入到任何网站。
 
@@ -83,7 +85,7 @@ npm run build         # 构建到 dist/
 ### 方式一：Web Component（推荐）
 
 ```html
-<script type="module" src="https://你的站点/ygo-deck.js"></script>
+<script type="module" src="https://aobarino.github.io/ygo-deck/ygo-deck.js"></script>
 
 <ygo-deck name="我的卡组" deck="ydke://..."></ygo-deck>
 
@@ -109,7 +111,7 @@ npm run build         # 构建到 dist/
 ### 方式二：iframe
 
 ```html
-<iframe src="https://你的站点/embed.html#deck=ydke%3A%2F%2F...&name=..." style="width:100%;height:640px;border:0"></iframe>
+<iframe src="https://aobarino.github.io/ygo-deck/embed.html#deck=ydke%3A%2F%2F...&name=..." style="width:100%;height:640px;border:0"></iframe>
 ```
 
 hash 参数额外支持 `compact`、`theme=light|dark`。iframe 页面会向父页面发送

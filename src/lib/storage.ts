@@ -6,6 +6,7 @@ export interface SavedDeck extends Deck {
   updatedAt: number;
 }
 
+// 键名沿用旧仓库名，改动会让用户已保存的卡组丢失
 const KEY = 'ygo-card-engine:decks';
 const DRAFT_KEY = 'ygo-card-engine:draft';
 const PREF_KEY = 'ygo-card-engine:prefs';

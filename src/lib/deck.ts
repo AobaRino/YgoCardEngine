@@ -93,7 +93,7 @@ export function validateDeck(
 // ---------------------------------------------------------------- YDK
 
 export function toYdk(deck: Deck): string {
-  const lines = ['#created by YgoCardEngine', '#main', ...deck.main.map(String), '#extra', ...deck.extra.map(String), '!side', ...deck.side.map(String)];
+  const lines = ['#created by ygo-deck', '#main', ...deck.main.map(String), '#extra', ...deck.extra.map(String), '!side', ...deck.side.map(String)];
   return lines.join('\n') + '\n';
 }
 
