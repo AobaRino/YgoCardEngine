@@ -1,14 +1,44 @@
 {
-  "version": "1.0.0",
-  "repository": "https://github.com/Marieyr/YgoCardEngine.git",
-  "author": "Marieyr <m4a1k2ak47@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "cz-conventional-changelog": "3.3.0"
+  "name": "ygo-card-engine",
+  "version": "2.0.0",
+  "description": "游戏王组卡器：卡片检索、卡组配置、分享与嵌入（React）",
+  "scripts": {
+    "data": "node --no-warnings scripts/build-data.ts",
+    "data:update": "node --no-warnings scripts/build-data.ts --fetch",
+    "predev": "npm run data",
+    "dev": "vite",
+    "prebuild": "npm run data",
+    "build": "vite build && vite build -c vite.embed.config.ts",
+    "preview": "vite preview",
+    "check": "tsc -p tsconfig.json",
+    "test": "vitest run"
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AobaRino/YgoCardEngine.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AobaRino/YgoCardEngine/issues"
+  },
+  "homepage": "https://github.com/AobaRino/YgoCardEngine#readme",
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zustand": "^5.0.15"
   }
 }
