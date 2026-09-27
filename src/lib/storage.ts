@@ -6,9 +6,9 @@ export interface SavedDeck extends Deck {
   updatedAt: number;
 }
 
-const KEY = 'ygo-card-engine:decks';
-const DRAFT_KEY = 'ygo-card-engine:draft';
-const PREF_KEY = 'ygo-card-engine:prefs';
+const KEY = 'ygo-deck:decks';
+const DRAFT_KEY = 'ygo-deck:draft';
+const PREF_KEY = 'ygo-deck:prefs';
 
 function read<T>(key: string, fallback: T): T {
   try {
