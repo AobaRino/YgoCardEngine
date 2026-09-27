@@ -26,7 +26,9 @@
 语言与框架：**TypeScript + React 19 + Vite**，状态管理用 zustand。
 
 - 组卡器、分享页、iframe 嵌入页、`<ygo-deck>` 组件共用同一套 React 组件（`src/components/`）
-- `<ygo-deck>` 是一个原生 Custom Element，内部用 React 渲染到 Shadow DOM，宿主网站不需要装 React
+- `<ygo-deck>` 是一个原生 Custom Element，渲染到 Shadow DOM，宿主网站不需要装 React。
+  它和组卡器共用同一套组件代码，但构建时用 [Preact](https://preactjs.com/)（`preact/compat`）替换 React，
+  脚本压缩后约 16 KB（gzip），见 `vite.embed.config.ts`
 - 数据构建脚本同样用 TypeScript，直接用 Node 内置的 `node:sqlite` 读取 cdb，不需要额外依赖
 
 ### 为什么运行时不用数据库
