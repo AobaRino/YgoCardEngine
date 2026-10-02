@@ -61,6 +61,11 @@ npm run data          # 不联网，用缓存或仓库自带数据生成
 VITE_CARD_IMAGES="https://img.example.com/pics/{id}.jpg" npm run build
 ```
 
+导出分享图片时，浏览器只允许把「允许跨域读取」的图片画进 canvas，而公共图床都不允许。
+所以 CI 会下载卡图并压缩成 192×280 的缩略图（`npm run thumbs`，见 `scripts/fetch-thumbs.ts`），
+和网站一起发布到 `thumbs/{id}.jpg`；导出图片时优先用它们。缩略图用 actions/cache 缓存，
+第一次部署需要下载全部卡图（时间较长），之后每次只补新卡。本地没有缩略图时，导出图片会退回文字卡面。
+
 ## 开发
 
 需要 Node.js 22.18+。
@@ -125,8 +130,9 @@ hash 参数额外支持 `compact`、`theme=light|dark`。iframe 页面会向父�
 
 ```
 Database/              旧项目保留的卡片数据（兜底）
-data/                  禁卡表、字段名快照；cache/ 为下载的上游数据（不入库）
+data/                  禁卡表、字段名快照；cache/ 为下载的上游数据，thumbs/ 为缩略图（都不入库）
 scripts/build-data.ts  cdb → 静态 JSON（全量 + 按 id 分片）
+scripts/fetch-thumbs.ts  下载卡图并生成导出图片用的缩略图
 src/lib/               卡片模型、卡组格式（YDK / ydke / 链接）、检索、数据加载
 src/components/        卡图、卡片详情、放大查看、只读卡组展示（组卡器与嵌入共用，样式在 components.css）
 src/app/               组卡器页面（store.ts 为全局状态）
