@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import DeckView from '../components/DeckView';
 import { deckFromParams, deckSize, type Deck } from '../lib/deck';
 import { siteBase } from '../lib/util';
 import Builder from './Builder';
 import { setDeck, useStore } from './store';
+
+const ImageDialog = lazy(() => import('./ImageDialog'));
 
 type Route = { page: 'builder'; open?: Deck } | { page: 'view'; deck: Deck };
 
@@ -42,6 +44,7 @@ function readTheme() {
 export default function App() {
   const [route, setRoute] = useState<Route>(parseHash);
   const [theme, setTheme] = useState(readTheme);
+  const [imageOpen, setImageOpen] = useState(false);
   const meta = useStore((s) => s.meta);
   const error = useStore((s) => s.error);
   const toast = useStore((s) => s.toast);
@@ -90,7 +93,12 @@ export default function App() {
 
       {route.page === 'view' ? (
         <div className="view-page">
-          <DeckView deck={route.deck} builderUrl={siteBase()} />
+          <DeckView deck={route.deck} builderUrl={siteBase()} onExportImage={() => setImageOpen(true)} />
+          {imageOpen && (
+            <Suspense>
+              <ImageDialog deck={route.deck} onClose={() => setImageOpen(false)} />
+            </Suspense>
+          )}
         </div>
       ) : error ? (
         <p className="load-error">卡片数据加载失败：{error}</p>

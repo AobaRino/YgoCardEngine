@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { ZONES, deckSize, emptyDeck, toYdk, toYdke, validateDeck } from '../lib/deck';
 import { saveDeck } from '../lib/storage';
 import { copyText, downloadText } from '../lib/util';
@@ -9,7 +9,9 @@ import ImportDialog from './ImportDialog';
 import ShareDialog from './ShareDialog';
 import { lookup, markSaved, renameDeck, selectBanlist, setBanlist, setDeck, sortDeck, toast, useStore } from './store';
 
-type Dialog = '' | 'share' | 'import' | 'decks' | 'draw';
+type Dialog = '' | 'share' | 'import' | 'decks' | 'draw' | 'image';
+
+const ImageDialog = lazy(() => import('./ImageDialog'));
 
 export default function DeckEditor() {
   const deck = useStore((s) => s.deck);
@@ -65,6 +67,7 @@ export default function DeckEditor() {
         <button className="btn" onClick={() => downloadText(`${deck.name || 'deck'}.ydk`, toYdk(deck))} disabled={!size}>导出 YDK</button>
         <button className="btn" onClick={async () => toast((await copyText(toYdke(deck))) ? '卡组码已复制' : '复制失败')} disabled={!size}>复制卡组码</button>
         <button className="btn primary" onClick={() => setDialog('share')} disabled={!size}>分享 / 嵌入</button>
+        <button className="btn" onClick={() => setDialog('image')} disabled={!size}>导出图片</button>
         <button className="btn" onClick={sortDeck}>排序</button>
         <button className="btn" onClick={() => setDialog('draw')} disabled={!deck.main.length}>试抽</button>
         <button className="btn danger" onClick={clearDeck}>清空</button>
@@ -99,6 +102,11 @@ export default function DeckEditor() {
       {dialog === 'import' && <ImportDialog onClose={close} />}
       {dialog === 'decks' && <DecksDialog onClose={close} />}
       {dialog === 'draw' && <DrawDialog onClose={close} />}
+      {dialog === 'image' && (
+        <Suspense>
+          <ImageDialog deck={deck} banlist={banlist} onClose={close} />
+        </Suspense>
+      )}
     </div>
   );
 }

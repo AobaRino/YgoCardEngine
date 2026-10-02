@@ -8,6 +8,7 @@
 - **组卡**：双击、`+` 按钮或拖拽加卡；卡组之间拖动调整；双击 / 右键移除；按禁卡表自动限制数量并校验卡组
 - **查看**：点击任意卡片看详情，大图放大查看，`←` `→` 翻页，手机上可左右滑动
 - **分享**：分享链接（卡组整个编码在 URL 里，不需要服务器）、`ydke://` 卡组码、`.ydk` 文件导入导出
+- **分享图片**：一键把卡组导出成图片（带禁限标记和二维码，扫码即可打开卡组），可下载、复制或在手机上直接分享
 - **嵌入**：`<ygo-deck>` Web Component 或 iframe，放进博客 / 论坛 / 个人主页
 - **其他**：本地保存多个卡组、试抽起手、深色模式、手机适配
 
@@ -113,9 +114,10 @@ npm run build         # 构建到 dist/
 ### 方式二：iframe
 
 ```html
-<iframe src="https://aobarino.github.io/ygo-deck/embed.html#deck=ydke%3A%2F%2F...&name=..." style="width:100%;height:640px;border:0"></iframe>
+<iframe src="https://aobarino.github.io/ygo-deck/embed.html#deck=...&name=..." style="width:100%;height:640px;border:0"></iframe>
 ```
 
+`deck` 参数可以是 `ydke://` 卡组码（需 URL 编码），也可以是分享链接里的紧凑格式；直接从组卡器的「分享 / 嵌入」复制即可。
 hash 参数额外支持 `compact`、`theme=light|dark`。iframe 页面会向父页面发送
 `{ type: 'ygo-deck:height', height }` 消息，可用来自动调整 iframe 高度。
 
