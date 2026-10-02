@@ -34,7 +34,8 @@ const SOURCES = (process.env.THUMB_SOURCES ?? 'https://cdn.233.momobako.com/ygop
 const LIMIT = Number(process.env.THUMB_LIMIT ?? Infinity);
 const USER_AGENT = 'ygo-deck thumbnail builder (+https://github.com/AobaRino/ygo-deck)';
 
-async function download(id: number): Promise<Buffer | null> {
+/** 依次尝试各个图床；某个图床返回的内容无法解码（错误页、残缺图片）时也换下一个 */
+async function fetchThumb(id: number): Promise<Buffer | null> {
   for (const tpl of SOURCES) {
     try {
       const res = await fetch(tpl.replace('{id}', String(id)), {
@@ -42,9 +43,10 @@ async function download(id: number): Promise<Buffer | null> {
         signal: AbortSignal.timeout(20000),
       });
       if (!res.ok) continue;
-      return Buffer.from(await res.arrayBuffer());
+      const raw = Buffer.from(await res.arrayBuffer());
+      return await sharp(raw).resize(WIDTH, HEIGHT, { fit: 'cover', position: 'top' }).jpeg({ quality: 80, mozjpeg: true }).toBuffer();
     } catch {
-      /* 换下一个图床 */
+      /* 网络错误或解码失败，换下一个图床 */
     }
   }
   return null;
@@ -70,28 +72,32 @@ async function main() {
   let saved = 0;
   let next = 0;
   const started = Date.now();
+  // 定期写出缺图记录：CI 步骤超时被终止时，下次运行能跳过已失败的卡，继续往后下载
+  const saveMissing = () => writeFileSync(MISSING_FILE, JSON.stringify(missing));
   const worker = async () => {
     while (next < todo.length) {
       const id = todo[next++];
-      const raw = await download(id);
-      if (raw) {
-        try {
-          const jpg = await sharp(raw).resize(WIDTH, HEIGHT, { fit: 'cover', position: 'top' }).jpeg({ quality: 80, mozjpeg: true }).toBuffer();
-          writeFileSync(join(OUT, `${id}.jpg`), jpg);
-          delete missing[id];
-          saved++;
-        } catch {
-          missing[id] = Date.now();
-        }
+      const jpg = await fetchThumb(id);
+      if (jpg) {
+        writeFileSync(join(OUT, `${id}.jpg`), jpg);
+        delete missing[id];
+        saved++;
       } else {
         missing[id] = Date.now();
       }
-      if (++done % 500 === 0) console.log(`  ${done}/${todo.length}（${((Date.now() - started) / 1000).toFixed(0)} 秒）`);
+      if (++done % 100 === 0) saveMissing();
+      if (done % 500 === 0) console.log(`  ${done}/${todo.length}（${((Date.now() - started) / 1000).toFixed(0)} 秒）`);
     }
   };
+  for (const sig of ['SIGTERM', 'SIGINT'] as const) {
+    process.once(sig, () => {
+      saveMissing();
+      process.exit(1);
+    });
+  }
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
-  writeFileSync(MISSING_FILE, JSON.stringify(missing));
+  saveMissing();
   console.log(`完成：新增 ${saved} 张，缺图 ${Object.keys(missing).length} 张`);
 }
 
