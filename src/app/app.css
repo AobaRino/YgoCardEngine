@@ -651,3 +651,11 @@ input.input.mono {
     grid-template-columns: 1fr;
   }
 }
+
+.deck-image-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}

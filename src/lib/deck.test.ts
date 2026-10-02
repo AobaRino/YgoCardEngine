@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fromTuple, type Card, type CardTuple } from './card';
-import { deckFromParams, deckToParams, parseAny, parseYdk, parseYdke, toYdk, toYdke, validateDeck, type Deck } from './deck';
+import { deckFromParams, deckToParams, parseAny, parseShareCode, parseYdk, parseYdke, toShareCode, toYdk, toYdke, validateDeck, type Deck } from './deck';
 
 const deck: Deck = { name: '测试', main: [14558127, 14558127, 89631139, 5000000], extra: [10000], side: [44330098] };
 
@@ -33,6 +33,31 @@ describe('share params', () => {
   it('round-trips through URLSearchParams', () => {
     const p = new URLSearchParams(deckToParams(deck).toString());
     expect(deckFromParams(p)).toEqual(deck);
+  });
+
+  it('uses a compact code that needs no escaping in URLs', () => {
+    const code = toShareCode(deck);
+    expect(code).toMatch(/^[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]*$/);
+    expect(parseShareCode(code, '测试')).toEqual(deck);
+    expect(deckToParams(deck).toString()).not.toMatch(/%2F|%2B|%3D|%21|%3A/);
+  });
+
+  it('still opens old links that carry ydke://', () => {
+    const old = new URLSearchParams();
+    old.set('deck', toYdke(deck));
+    old.set('name', '测试');
+    expect(deckFromParams(new URLSearchParams(old.toString()))).toEqual(deck);
+  });
+
+  it('can shorten the name for QR codes', () => {
+    const long = { ...deck, name: '一二三四五六七八九十十一十二十三' };
+    expect(deckToParams(long, 12).get('name')).toBe('一二三四五六七八九十十一');
+    expect(deckToParams({ ...deck, name: '' }).has('name')).toBe(false);
+  });
+
+  it('round-trips empty zones', () => {
+    const d = { name: '', main: [1, 2], extra: [], side: [] };
+    expect(parseShareCode(toShareCode(d))).toEqual(d);
   });
 
   it('parseAny recognises every format', () => {

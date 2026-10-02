@@ -12,10 +12,12 @@ interface Props {
   builderUrl?: string;
   compact?: boolean;
   showToolbar?: boolean;
+  /** 提供时工具栏显示「导出图片」（嵌入组件不提供，以免增加脚本体积） */
+  onExportImage?: () => void;
 }
 
 /** 只读卡组展示：分享页、iframe 嵌入页、<ygo-deck> 组件共用 */
-export default function DeckView({ deck, builderUrl, compact = false, showToolbar = true }: Props) {
+export default function DeckView({ deck, builderUrl, compact = false, showToolbar = true, onExportImage }: Props) {
   const [cards, setCards] = useState<Map<number, Card> | null>(null);
   const [error, setError] = useState('');
   const [banlist, setBanlist] = useState<Banlist | null>(null);
@@ -79,6 +81,7 @@ export default function DeckView({ deck, builderUrl, compact = false, showToolba
               复制卡组码
             </button>
             <button onClick={() => downloadText(`${deck.name || 'deck'}.ydk`, toYdk(deck))}>下载 YDK</button>
+            {onExportImage && <button onClick={onExportImage}>导出图片</button>}
             {openUrl && (
               <a href={openUrl} target="_blank" rel="noopener">
                 在组卡器中打开

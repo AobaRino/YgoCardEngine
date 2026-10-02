@@ -145,11 +145,28 @@ export function parseYdke(s: string, name = ''): Deck {
 
 // ---------------------------------------------------------------- 分享链接
 
+/**
+ * 链接里用的紧凑卡组码：「主.额外.副」，每段是 URL 安全的 base64（无补位）。
+ * 内容和 ydke:// 一样，但放进 URL 不需要转义，链接更短，二维码也更容易扫。
+ */
+export function toShareCode(deck: Deck): string {
+  const urlSafe = (ids: number[]) => idsToBase64(ids).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return [deck.main, deck.extra, deck.side].map(urlSafe).join('.');
+}
+
+/** 解析链接里的卡组码：兼容紧凑格式和旧链接里的 ydke:// */
+export function parseShareCode(code: string, name = ''): Deck {
+  if (/^ydke:\/\//i.test(code) || code.includes('!')) return parseYdke(code, name);
+  const [main = '', extra = '', side = ''] = code.split('.');
+  return { name, main: base64ToIds(main), extra: base64ToIds(extra), side: base64ToIds(side) };
+}
+
 /** 卡组 → URL 参数（放在 hash 中，静态托管即可，无需后端） */
-export function deckToParams(deck: Deck): URLSearchParams {
+export function deckToParams(deck: Deck, maxNameLength = Infinity): URLSearchParams {
   const p = new URLSearchParams();
-  p.set('deck', toYdke(deck));
-  if (deck.name) p.set('name', deck.name);
+  p.set('deck', toShareCode(deck));
+  const name = [...deck.name].slice(0, maxNameLength).join('');
+  if (name) p.set('name', name);
   return p;
 }
 
@@ -157,7 +174,7 @@ export function deckFromParams(p: URLSearchParams): Deck | null {
   const code = p.get('deck');
   if (!code) return null;
   try {
-    return parseYdke(code, p.get('name') ?? '');
+    return parseShareCode(code, p.get('name') ?? '');
   } catch {
     return null;
   }
