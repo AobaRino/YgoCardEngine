@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { getCard, loadBanlists, type Banlist } from '../lib/data';
-import { deckToParams, type Deck } from '../lib/deck';
+import { getCard, loadBanlists, loadCards, type Banlist } from '../lib/data';
+import { allIds, deckToParams, type Deck } from '../lib/deck';
 import { canvasToBlob, renderDeckImage } from '../lib/deckImage';
 import { siteBase } from '../lib/util';
 import Modal from './Modal';
@@ -26,14 +26,15 @@ export default function ImageDialog({ deck, banlist, onClose }: Props) {
     let objectUrl = '';
     const base = siteBase();
     const banlistReady = banlist !== undefined ? Promise.resolve(banlist) : loadBanlists().then((l) => l[0] ?? null, () => null);
-    banlistReady
-      .then((bl) =>
+    // 卡片数据（卡名、类型、攻守）可能还没加载完，比如分享页刚打开就点了导出，先等它就绪
+    Promise.all([banlistReady, loadCards(allIds(deck))])
+      .then(([bl]) =>
         renderDeckImage(deck, {
           lookup: getCard,
           banlist: bl,
           // 卡组名只取前 12 个字，控制二维码密度（图片里已经印着完整卡组名）
           url: `${base}#/view?${deckToParams(deck, 12)}`,
-      siteLabel: base.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+          siteLabel: base.replace(/^https?:\/\//, '').replace(/\/$/, ''),
           onProgress: (n, total) => alive && setProgress([n, total]),
         }),
       )

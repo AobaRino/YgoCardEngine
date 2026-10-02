@@ -53,35 +53,45 @@ const FOOTER_H = QR_SIZE + 40;
 
 // ---------------------------------------------------------------- 卡图加载
 
-function loadImage(url: string, timeout = 10000): Promise<HTMLImageElement | null> {
+/** 单张卡图请求的超时，以及整张图所有卡图加载的总时限（超时的卡用文字卡面） */
+const ATTEMPT_TIMEOUT = 8000;
+const TOTAL_BUDGET = 20000;
+
+type LoadResult = { img: HTMLImageElement } | { img: null; timedOut: boolean };
+
+function loadImage(url: string, timeout: number): Promise<LoadResult> {
   return new Promise((resolve) => {
+    if (timeout <= 0) return resolve({ img: null, timedOut: true });
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.decoding = 'async';
     const timer = setTimeout(() => {
       img.src = '';
-      resolve(null);
+      resolve({ img: null, timedOut: true });
     }, timeout);
     img.onload = () => {
       clearTimeout(timer);
-      resolve(img);
+      resolve({ img });
     };
     img.onerror = () => {
       clearTimeout(timer);
-      resolve(null);
+      resolve({ img: null, timedOut: false });
     };
     img.src = url;
   });
 }
 
 /**
- * 依次尝试各个图床。页面上的 <img> 是不带 CORS 请求的，浏览器缓存的响应可能缺少 CORS 头，
- * 所以失败后再带一个查询参数绕开缓存重试一次。
+ * 依次尝试各个图床，所有请求共享同一个截止时间。
+ * 页面上的 <img> 是不带 CORS 请求的，浏览器缓存的响应可能缺少 CORS 头，
+ * 所以请求很快失败（而不是超时）时，再带一个查询参数绕开缓存重试一次。
  */
-async function loadCardImage(id: number): Promise<HTMLImageElement | null> {
+async function loadCardImage(id: number, deadline: number): Promise<HTMLImageElement | null> {
+  const remaining = () => Math.min(ATTEMPT_TIMEOUT, deadline - Date.now());
   for (const url of imageUrls(id)) {
-    const img = (await loadImage(url)) ?? (await loadImage(url + (url.includes('?') ? '&' : '?') + 'cors=1'));
-    if (img) return img;
+    let r = await loadImage(url, remaining());
+    if (!r.img && !r.timedOut) r = await loadImage(url + (url.includes('?') ? '&' : '?') + 'cors=1', remaining());
+    if (r.img) return r.img;
   }
   return null;
 }
@@ -89,13 +99,14 @@ async function loadCardImage(id: number): Promise<HTMLImageElement | null> {
 async function loadAll(ids: number[], onProgress?: (n: number, total: number) => void) {
   const unique = [...new Set(ids)];
   const result = new Map<number, HTMLImageElement | null>();
+  const deadline = Date.now() + TOTAL_BUDGET;
   let done = 0;
   let next = 0;
   onProgress?.(0, unique.length);
   const worker = async () => {
     while (next < unique.length) {
       const id = unique[next++];
-      result.set(id, await loadCardImage(id));
+      result.set(id, await loadCardImage(id, deadline));
       onProgress?.(++done, unique.length);
     }
   };
