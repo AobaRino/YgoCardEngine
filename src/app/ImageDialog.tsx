@@ -34,6 +34,7 @@ export default function ImageDialog({ deck, banlist, onClose }: Props) {
           banlist: bl,
           // 卡组名只取前 12 个字，控制二维码密度（图片里已经印着完整卡组名）
           url: `${base}#/view?${deckToParams(deck, 12)}`,
+          thumbBase: new URL('thumbs/', base).href,
           siteLabel: base.replace(/^https?:\/\//, '').replace(/\/$/, ''),
           onProgress: (n, total) => alive && setProgress([n, total]),
         }),
@@ -118,7 +119,7 @@ export default function ImageDialog({ deck, banlist, onClose }: Props) {
           </div>
           {result.missing > 0 && (
             <p className="small" style={{ color: 'var(--warn)' }}>
-              有 {result.missing} 种卡的卡图没能加载（图床不允许跨域读取或网络问题），图中用文字卡面代替。
+              有 {result.missing} 种卡的卡图没能加载（可能是新卡还没生成缩略图，或网络问题），图中用文字卡面代替。
             </p>
           )}
           <img className="deck-image-preview" src={result.url} alt={`${deck.name || '卡组'}分享图`} />

@@ -20,6 +20,11 @@ export interface DeckImageOptions {
   /** 卡图加载进度 */
   onProgress?: (loaded: number, total: number) => void;
   scale?: number;
+  /**
+   * 网站自己托管的缩略图目录（thumbs/{id}.jpg，见 scripts/fetch-thumbs.ts）。
+   * 和网站同源，不受图床跨域限制，优先使用；没有时再试公共图床。
+   */
+  thumbBase?: string;
 }
 
 const FRAME_COLORS: Record<string, string> = {
@@ -82,12 +87,16 @@ function loadImage(url: string, timeout: number): Promise<LoadResult> {
 }
 
 /**
- * 依次尝试各个图床，所有请求共享同一个截止时间。
+ * 先用网站自己的缩略图，再依次尝试各个图床，所有请求共享同一个截止时间。
  * 页面上的 <img> 是不带 CORS 请求的，浏览器缓存的响应可能缺少 CORS 头，
- * 所以请求很快失败（而不是超时）时，再带一个查询参数绕开缓存重试一次。
+ * 所以图床请求很快失败（而不是超时）时，再带一个查询参数绕开缓存重试一次。
  */
-async function loadCardImage(id: number, deadline: number): Promise<HTMLImageElement | null> {
+async function loadCardImage(id: number, deadline: number, thumbBase?: string): Promise<HTMLImageElement | null> {
   const remaining = () => Math.min(ATTEMPT_TIMEOUT, deadline - Date.now());
+  if (thumbBase) {
+    const r = await loadImage(`${thumbBase}${id}.jpg`, remaining());
+    if (r.img) return r.img;
+  }
   for (const url of imageUrls(id)) {
     let r = await loadImage(url, remaining());
     if (!r.img && !r.timedOut) r = await loadImage(url + (url.includes('?') ? '&' : '?') + 'cors=1', remaining());
@@ -96,18 +105,18 @@ async function loadCardImage(id: number, deadline: number): Promise<HTMLImageEle
   return null;
 }
 
-async function loadAll(ids: number[], onProgress?: (n: number, total: number) => void) {
+async function loadAll(ids: number[], opts: Pick<DeckImageOptions, 'onProgress' | 'thumbBase'>) {
   const unique = [...new Set(ids)];
   const result = new Map<number, HTMLImageElement | null>();
   const deadline = Date.now() + TOTAL_BUDGET;
   let done = 0;
   let next = 0;
-  onProgress?.(0, unique.length);
+  opts.onProgress?.(0, unique.length);
   const worker = async () => {
     while (next < unique.length) {
       const id = unique[next++];
-      result.set(id, await loadCardImage(id, deadline));
-      onProgress?.(++done, unique.length);
+      result.set(id, await loadCardImage(id, deadline, opts.thumbBase));
+      opts.onProgress?.(++done, unique.length);
     }
   };
   await Promise.all(Array.from({ length: Math.min(8, unique.length) }, worker));
@@ -261,7 +270,7 @@ export interface DeckImageResult {
 
 export async function renderDeckImage(deck: Deck, opts: DeckImageOptions): Promise<DeckImageResult> {
   const scale = opts.scale ?? 2;
-  const images = await loadAll([...deck.main, ...deck.extra, ...deck.side], opts.onProgress);
+  const images = await loadAll([...deck.main, ...deck.extra, ...deck.side], opts);
 
   const zones = ZONES.filter((z) => deck[z].length).map((z) => ({ zone: z, ...layoutZone(deck[z].length, z !== 'main') }));
   const bodyH = zones.reduce((h, z) => h + LABEL_H + z.height + SECTION_GAP, 0);

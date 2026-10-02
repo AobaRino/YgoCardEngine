@@ -30,6 +30,27 @@ jobs:
       - run: npm ci
       - name: 下载最新卡片数据
         run: npm run data:update
+      # 导出图片用的缩略图：缓存已下载的，每次只补新卡（PR 检查不需要）
+      - name: 恢复缩略图缓存
+        if: github.event_name != 'pull_request'
+        uses: actions/cache/restore@v4
+        with:
+          path: data/thumbs
+          key: thumbs-${{ github.run_id }}
+          restore-keys: thumbs-
+      - name: 下载新卡缩略图
+        id: thumbs
+        if: github.event_name != 'pull_request'
+        run: npm run thumbs
+        # 第一次需要下载全部卡图；超时或图床出问题也不影响发布，下次继续补
+        timeout-minutes: 120
+        continue-on-error: true
+      - name: 保存缩略图缓存
+        if: always() && steps.thumbs.outputs.changed == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: data/thumbs
+          key: thumbs-${{ github.run_id }}
       - run: npm run check
       - run: npm test
       - run: npm run build

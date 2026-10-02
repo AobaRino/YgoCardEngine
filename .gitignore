@@ -4,6 +4,8 @@ dist/
 public/data/
 # 下载的上游数据缓存
 data/cache/
+# 导出图片用的缩略图（CI 中缓存，随网站发布）
+data/thumbs/
 *.log
 .DS_Store
 .vscode/
